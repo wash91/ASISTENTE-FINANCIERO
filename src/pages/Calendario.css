@@ -226,6 +226,67 @@
   text-align: center;
 }
 
+/* WA PICKER MODAL */
+.wa-picker-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+}
+
+.wa-picker-modal .modal-body {
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.wa-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wa-pick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+
+.wa-pick-item:hover {
+  border-color: var(--green);
+  background: rgba(0,184,148,0.05);
+}
+
+.wa-pick-nombre {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.wa-pick-preview {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+}
+
 /* RESPONSIVE */
 @media (max-width: 780px) {
   .cal-day { min-height: 75px; padding: 5px 4px; }

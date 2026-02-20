@@ -15,7 +15,10 @@ import {
 import { es } from "date-fns/locale";
 import { db } from "../firebase/config";
 import { useAuth } from "../context/AuthContext";
-import ProcesoModal from "../components/ProcesoModal";
+import ProcesoModal        from "../components/ProcesoModal";
+import DocumentosModal     from "../components/DocumentosModal";
+import CobrosModal         from "../components/CobrosModal";
+import UsarPlantillaModal  from "../components/UsarPlantillaModal";
 import "./Calendario.css";
 
 const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
@@ -24,14 +27,26 @@ const MAX_VISIBLE = 3;
 export default function Calendario() {
   const { empresaId } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [clientes, setClientes]         = useState([]);
-  const [obligaciones, setObligaciones] = useState({}); // { clienteId → { id, estado, tipo, notas, ... } }
-  const [loading, setLoading]           = useState(true);
+
+  // Datos
+  const [clientes,    setClientes]    = useState([]);   // activos con vencimientoSRI (grid)
+  const [clientesTodos, setClientesTodos] = useState([]); // todos activos (para CobrosModal)
+  const [obligaciones, setObligaciones] = useState({}); // { clienteId → obligacion }
+  const [plantillas,  setPlantillas]  = useState([]);   // activas para WhatsApp picker
+  const [loading,     setLoading]     = useState(true);
+
+  // Modal principal
   const [selectedEvent, setSelectedEvent] = useState(null); // { cliente, dia }
+
+  // Sub-modales
+  const [documentosTarget, setDocumentosTarget] = useState(null); // cliente
+  const [cobrarTarget,     setCobrarTarget]     = useState(null); // cliente
+  const [waPickerTarget,   setWaPickerTarget]   = useState(null); // cliente
+  const [waUsarTarget,     setWaUsarTarget]     = useState(null); // { plantilla, cliente }
 
   const periodo = format(currentMonth, "yyyy-MM");
 
-  // ─── Clientes activos con vencimientoSRI ───────────────────────────────────
+  // ─── Clientes activos ─────────────────────────────────────────────────────
   useEffect(() => {
     if (!empresaId) return;
     const unsub = onSnapshot(
@@ -39,12 +54,13 @@ export default function Calendario() {
       snap => {
         const data = snap.docs
           .map(d => ({ id: d.id, ...d.data() }))
-          .filter(c => c.estado === "activo" && c.vencimientoSRI);
+          .filter(c => c.estado === "activo");
         data.sort((a, b) =>
-          a.vencimientoSRI - b.vencimientoSRI ||
+          (a.vencimientoSRI || 99) - (b.vencimientoSRI || 99) ||
           (a.nombre || "").localeCompare(b.nombre || "")
         );
-        setClientes(data);
+        setClientesTodos(data);
+        setClientes(data.filter(c => c.vencimientoSRI));
         setLoading(false);
       }
     );
@@ -68,6 +84,23 @@ export default function Calendario() {
     });
     return unsub;
   }, [empresaId, periodo]);
+
+  // ─── Plantillas WhatsApp activas ──────────────────────────────────────────
+  useEffect(() => {
+    if (!empresaId) return;
+    const unsub = onSnapshot(
+      collection(db, "empresas", empresaId, "plantillasWhatsApp"),
+      snap => {
+        setPlantillas(
+          snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .filter(p => p.estado === "activo")
+            .sort((a, b) => (a.nombre || "").localeCompare(b.nombre || ""))
+        );
+      }
+    );
+    return unsub;
+  }, [empresaId]);
 
   // ─── Grid del calendario (memoizado) ──────────────────────────────────────
   const calDays = useMemo(() => {
@@ -140,6 +173,22 @@ export default function Calendario() {
       );
     }
     setSelectedEvent(null);
+  }
+
+  // ─── Callbacks para ProcesoModal ─────────────────────────────────────────
+  function handleDocumentos(cliente) {
+    setSelectedEvent(null);
+    setDocumentosTarget(cliente);
+  }
+
+  function handleCobro(cliente) {
+    setSelectedEvent(null);
+    setCobrarTarget(cliente);
+  }
+
+  function handleWhatsapp(cliente) {
+    setSelectedEvent(null);
+    setWaPickerTarget(cliente);
   }
 
   // ─── Título del mes ───────────────────────────────────────────────────────
@@ -268,7 +317,7 @@ export default function Calendario() {
         </>
       )}
 
-      {/* Modal de proceso */}
+      {/* Modal principal — proceso */}
       {selectedEvent && (
         <ProcesoModal
           cliente={selectedEvent.cliente}
@@ -276,6 +325,78 @@ export default function Calendario() {
           obligacion={obligaciones[selectedEvent.cliente.id] || null}
           onSave={handleSave}
           onClose={() => setSelectedEvent(null)}
+          onDocumentos={handleDocumentos}
+          onCobro={handleCobro}
+          onWhatsapp={handleWhatsapp}
+        />
+      )}
+
+      {/* Sub-modal: Documentos */}
+      {documentosTarget && (
+        <DocumentosModal
+          cliente={documentosTarget}
+          onClose={() => setDocumentosTarget(null)}
+        />
+      )}
+
+      {/* Sub-modal: Cobro */}
+      {cobrarTarget && (
+        <CobrosModal
+          clientes={clientesTodos}
+          clienteIdInicial={cobrarTarget.id}
+          onClose={() => setCobrarTarget(null)}
+        />
+      )}
+
+      {/* Sub-modal: WhatsApp picker */}
+      {waPickerTarget && !waUsarTarget && (
+        <div className="modal-backdrop" onClick={() => setWaPickerTarget(null)}>
+          <div className="wa-picker-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <h2 className="modal-title">Seleccionar plantilla</h2>
+                <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
+                  {waPickerTarget.nombre}
+                </p>
+              </div>
+              <button className="modal-close" onClick={() => setWaPickerTarget(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              {plantillas.length === 0 ? (
+                <p style={{ fontSize: "13px", color: "var(--text-muted)", padding: "8px 0" }}>
+                  No hay plantillas activas.{" "}
+                  <Link to="/whatsapp" style={{ color: "var(--green)" }}>
+                    Crear una →
+                  </Link>
+                </p>
+              ) : (
+                <div className="wa-pick-list">
+                  {plantillas.map(p => (
+                    <button
+                      key={p.id}
+                      className="wa-pick-item"
+                      onClick={() => {
+                        setWaUsarTarget({ plantilla: p, cliente: waPickerTarget });
+                        setWaPickerTarget(null);
+                      }}
+                    >
+                      <span className="wa-pick-nombre">{p.nombre}</span>
+                      <span className="wa-pick-preview">{p.cuerpo}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sub-modal: WhatsApp usar plantilla */}
+      {waUsarTarget && (
+        <UsarPlantillaModal
+          plantilla={waUsarTarget.plantilla}
+          clientes={[waUsarTarget.cliente]}
+          onClose={() => setWaUsarTarget(null)}
         />
       )}
     </div>

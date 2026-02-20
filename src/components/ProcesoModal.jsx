@@ -19,7 +19,7 @@ function getInitials(nombre) {
     .map(w => w[0]).join("").toUpperCase();
 }
 
-export default function ProcesoModal({ cliente, dia, obligacion, onSave, onClose }) {
+export default function ProcesoModal({ cliente, dia, obligacion, onSave, onClose, onDocumentos, onCobro, onWhatsapp }) {
   const [tipo, setTipo] = useState(obligacion?.tipo || TIPOS[0]);
   const [notas, setNotas] = useState(obligacion?.notas || "");
   const [saving, setSaving] = useState(false);
@@ -98,14 +98,27 @@ export default function ProcesoModal({ cliente, dia, obligacion, onSave, onClose
             />
           </div>
 
-          {/* Próximas funciones */}
-          <div className="pm-next-features">
-            <div className="pm-nf-title">Disponible próximamente</div>
-            <div className="pm-nf-items">
-              <span className="pm-nf-item">📎 Adjuntar documento</span>
-              <span className="pm-nf-item">💰 Registrar cobro</span>
-              <span className="pm-nf-item">💬 Enviar WhatsApp</span>
-            </div>
+          {/* Acciones rápidas */}
+          <div className="modal-section-label">Acciones rápidas</div>
+          <div className="pm-quick-actions">
+            <button
+              className="btn btn-ghost pm-action-btn"
+              onClick={() => onDocumentos(cliente)}
+            >
+              📁 Ver documentos
+            </button>
+            <button
+              className="btn btn-ghost pm-action-btn"
+              onClick={() => onCobro(cliente)}
+            >
+              💰 Registrar cobro
+            </button>
+            <button
+              className="btn btn-ghost pm-action-btn"
+              onClick={() => onWhatsapp(cliente)}
+            >
+              💬 Enviar WhatsApp
+            </button>
           </div>
 
           {/* Footer */}

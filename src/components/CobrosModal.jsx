@@ -9,11 +9,11 @@ const MESES = [
   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
 ];
 
-export default function CobrosModal({ clientes, onClose }) {
+export default function CobrosModal({ clientes, clienteIdInicial = "", onClose }) {
   const { empresaId } = useAuth();
   const now = new Date();
 
-  const [clienteId, setClienteId] = useState("");
+  const [clienteId, setClienteId] = useState(clienteIdInicial);
   const [mes, setMes] = useState(now.getMonth() + 1);       // 1-12
   const [anio, setAnio] = useState(now.getFullYear());
   const [concepto, setConcepto] = useState("");
