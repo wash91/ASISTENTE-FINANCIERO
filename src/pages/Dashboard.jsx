@@ -1,27 +1,65 @@
+import { useState, useEffect } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase/config";
+import { useAuth } from "../context/AuthContext";
+import AlertasPanel from "../components/AlertasPanel";
 import "./Dashboard.css";
 
-const STATS = [
-  { label: "Ingresos Feb",    value: "$2,840", trend: "↑ +18% vs enero",       color: "var(--green)", glow: "rgba(0,184,148,0.15)",    icon: "💰" },
-  { label: "Por Cobrar",      value: "$680",   trend: "4 clientes pendientes",  color: "var(--coral)", glow: "rgba(255,107,107,0.15)",  icon: "⏳" },
-  { label: "Clientes Activos",value: "24",     trend: "↑ 2 nuevos este mes",    color: "var(--blue)",  glow: "rgba(74,144,217,0.15)",   icon: "👥" },
-  { label: "Procesos Activos",value: "12",     trend: "3 vencen esta semana",   color: "var(--amber)", glow: "rgba(249,199,79,0.15)",   icon: "📋" },
-];
-
+// Mock — se reemplazarán en módulos futuros (M-10 Calendario, M-12 Proyectos)
 const PROCESSES = [
-  { status: "red",   name: "Declaración IVA — Formulario 104",  client: "Ferretería Sucre S.A.S.",        date: "Hoy",   badge: "bad" },
-  { status: "amber", name: "Retenciones en la Fuente — F.103",  client: "Distribuidora El Oriente",       date: "21 Feb" },
-  { status: "amber", name: "Aviso de Entrada MDT",              client: "Constructora Amazonas Cía. Ltda.", date: "22 Feb" },
-  { status: "red",   name: "Declaración IVA — Formulario 104",  client: "Comercial Los Andes",            date: "24 Feb" },
-  { status: "green", name: "Contrato de Trabajo",               client: "Hotel Macas Real",               date: "Listo", badge: "ok" },
-];
-
-const COBROS = [
-  { initials: "FS", name: "Ferretería Sucre",    info: "15 días vencido", value: "$120", badge: "bad",  gradient: "linear-gradient(135deg,#F9C74F,#FF6B6B)" },
-  { initials: "DO", name: "Distrib. Oriente",    info: "5 días vencido",  value: "$80",  badge: "warn", gradient: "linear-gradient(135deg,#4A90D9,#7c3aed)" },
-  { initials: "CA", name: "Constructora Amazonas", info: "Al día",        value: "✓",    badge: "ok",   gradient: "linear-gradient(135deg,var(--green),var(--blue))" },
+  { status: "red",   name: "Declaración IVA — Formulario 104",   client: "Ferretería Sucre S.A.S.",         date: "Hoy",   badge: "bad" },
+  { status: "amber", name: "Retenciones en la Fuente — F.103",   client: "Distribuidora El Oriente",        date: "21 Feb" },
+  { status: "amber", name: "Aviso de Entrada MDT",               client: "Constructora Amazonas Cía. Ltda.", date: "22 Feb" },
+  { status: "red",   name: "Declaración IVA — Formulario 104",   client: "Comercial Los Andes",             date: "24 Feb" },
+  { status: "green", name: "Contrato de Trabajo",                client: "Hotel Macas Real",                date: "Listo", badge: "ok" },
 ];
 
 export default function Dashboard() {
+  const { empresaId } = useAuth();
+  const [clientes, setClientes] = useState([]);
+  const [cobros,   setCobros]   = useState([]);
+
+  useEffect(() => {
+    if (!empresaId) return;
+    const unsub = onSnapshot(
+      collection(db, "empresas", empresaId, "clientes"),
+      snap => setClientes(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    );
+    return unsub;
+  }, [empresaId]);
+
+  useEffect(() => {
+    if (!empresaId) return;
+    const unsub = onSnapshot(
+      collection(db, "empresas", empresaId, "cobros"),
+      snap => setCobros(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    );
+    return unsub;
+  }, [empresaId]);
+
+  // Stats en tiempo real
+  const clientesActivos = clientes.filter(c => c.estado === "activo").length;
+  const porCobrar = cobros
+    .filter(c => c.estado !== "pagado")
+    .reduce((s, c) => s + (c.montoPendiente || 0), 0);
+
+  // Cobros pendientes reales para la card derecha
+  const cobrosPendientes = cobros
+    .filter(c => c.estado !== "pagado")
+    .sort((a, b) => (a.periodo || "").localeCompare(b.periodo || ""))
+    .slice(0, 3);
+
+  const STATS = [
+    { label: "Ingresos Feb",     value: "$2,840",                          trend: "↑ +18% vs enero",                                    color: "var(--green)", glow: "rgba(0,184,148,0.15)",   icon: "💰" },
+    { label: "Por Cobrar",       value: `$${porCobrar.toFixed(2)}`,        trend: `${cobros.filter(c => c.estado !== "pagado").length} cobros pendientes`, color: "var(--coral)", glow: "rgba(255,107,107,0.15)", icon: "⏳" },
+    { label: "Clientes Activos", value: String(clientesActivos),           trend: `${clientes.length} en total`,                        color: "var(--blue)",  glow: "rgba(74,144,217,0.15)",  icon: "👥" },
+    { label: "Procesos Activos", value: "12",                              trend: "3 vencen esta semana",                               color: "var(--amber)", glow: "rgba(249,199,79,0.15)",  icon: "📋" },
+  ];
+
+  function getInitials(nombre) {
+    return (nombre || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).toUpperCase().join("");
+  }
+
   return (
     <div className="dashboard animate-fadeUp">
       {/* Stats */}
@@ -38,7 +76,7 @@ export default function Dashboard() {
 
       {/* Content grid */}
       <div className="dashboard-grid">
-        {/* Procesos */}
+        {/* Procesos — mock hasta M-10 */}
         <div className="card">
           <div className="card-header">
             <div>
@@ -59,8 +97,7 @@ export default function Dashboard() {
               <div className="proc-date">
                 {p.badge
                   ? <span className={`badge badge-${p.badge}`}>{p.date}</span>
-                  : p.date
-                }
+                  : p.date}
               </div>
             </div>
           ))}
@@ -68,24 +105,51 @@ export default function Dashboard() {
 
         {/* Sidebar derecho */}
         <div className="dashboard-side">
-          {/* Cobros */}
+          {/* Alertas — M-08 */}
+          <AlertasPanel clientes={clientes} cobros={cobros} />
+
+          {/* Cobros pendientes — datos reales */}
           <div className="card">
             <div className="card-header">
               <div className="card-title">Cobros Pendientes</div>
+              {cobrosPendientes.length > 0 && (
+                <a href="/facturacion" className="btn btn-ghost" style={{ fontSize: "11px", padding: "5px 10px" }}>
+                  Ver todos →
+                </a>
+              )}
             </div>
-            {COBROS.map((c, i) => (
-              <div className="client-row" key={i}>
-                <div className="client-av" style={{ background: c.gradient }}>{c.initials}</div>
-                <div>
-                  <div className="client-name">{c.name}</div>
-                  <div className="client-sub">{c.info}</div>
-                </div>
-                <span className={`badge badge-${c.badge}`} style={{ marginLeft: "auto" }}>{c.value}</span>
-              </div>
-            ))}
+            {cobrosPendientes.length === 0 ? (
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", padding: "8px 0" }}>
+                Sin cobros pendientes ✓
+              </p>
+            ) : (
+              cobrosPendientes.map(c => {
+                const gradient =
+                  c.estado === "pendiente"
+                    ? "linear-gradient(135deg,#F9C74F,#FF6B6B)"
+                    : "linear-gradient(135deg,#4A90D9,#7c3aed)";
+                return (
+                  <div className="client-row" key={c.id}>
+                    <div className="client-av" style={{ background: gradient }}>
+                      {getInitials(c.clienteNombre)}
+                    </div>
+                    <div>
+                      <div className="client-name">{c.clienteNombre}</div>
+                      <div className="client-sub">{c.periodo}</div>
+                    </div>
+                    <span
+                      className={`badge badge-${c.estado === "pendiente" ? "bad" : "warn"}`}
+                      style={{ marginLeft: "auto" }}
+                    >
+                      ${(c.montoPendiente || 0).toFixed(2)}
+                    </span>
+                  </div>
+                );
+              })
+            )}
           </div>
 
-          {/* Proyecto */}
+          {/* Proyecto — mock hasta M-12 */}
           <div className="card">
             <div className="card-header">
               <div className="card-title">Proyecto Activo</div>
