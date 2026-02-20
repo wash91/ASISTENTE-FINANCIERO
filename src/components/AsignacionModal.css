@@ -1,0 +1,156 @@
+.asignacion-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+}
+
+.asig-modal-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Empty state */
+.asig-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.asig-empty-icon {
+  font-size: 36px;
+  opacity: 0.25;
+  margin-bottom: 10px;
+}
+.asig-empty span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Lista de servicios asignados */
+.asig-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.asig-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s;
+}
+.asig-item:hover { border-color: var(--border-mid); }
+
+.asig-item-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.asig-item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asig-cat-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.asig-remove {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.asig-remove:hover {
+  color: var(--coral);
+  background: rgba(255,107,107,0.1);
+}
+
+.asig-item-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.asig-base {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Input de precio */
+.asig-precio-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.asig-precio-sym {
+  position: absolute;
+  left: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.asig-precio-input {
+  width: 100px;
+  padding-left: 22px !important;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* Sección añadir */
+.asig-add-section {
+  margin-top: 16px;
+}
+
+.asig-add-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.asig-select {
+  flex: 1;
+  min-width: 180px;
+}
+
+.asig-add-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}

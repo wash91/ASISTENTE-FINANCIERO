@@ -11,6 +11,8 @@ import {
 import { db } from "../firebase/config";
 import { useAuth } from "../context/AuthContext";
 import ClienteModal from "../components/ClienteModal";
+import AsignacionModal from "../components/AsignacionModal";
+import { CATEGORIAS } from "./Servicios";
 import "./Clientes.css";
 
 export default function Clientes() {
@@ -22,6 +24,8 @@ export default function Clientes() {
   const [modal, setModal] = useState(null);       // null | "nuevo" | cliente objeto
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [asignacionTarget, setAsignacionTarget] = useState(null);
+  const [serviciosCatalogo, setServiciosCatalogo] = useState([]);
 
   // Suscripción en tiempo real a Firestore
   useEffect(() => {
@@ -36,6 +40,20 @@ export default function Clientes() {
       });
       setClientes(data);
       setLoading(false);
+    });
+    return unsub;
+  }, [empresaId]);
+
+  // Suscripción al catálogo de servicios (solo activos)
+  useEffect(() => {
+    if (!empresaId) return;
+    const ref = collection(db, "empresas", empresaId, "servicios");
+    const unsub = onSnapshot(ref, snap => {
+      setServiciosCatalogo(
+        snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(s => s.estado === "activo")
+      );
     });
     return unsub;
   }, [empresaId]);
@@ -163,6 +181,7 @@ export default function Clientes() {
             <div>RUC</div>
             <div>Vcto. SRI</div>
             <div>Mensualidad</div>
+            <div>Servicios</div>
             <div>Estado</div>
             <div></div>
           </div>
@@ -195,6 +214,25 @@ export default function Clientes() {
                 {c.mensualidad != null ? `$${c.mensualidad.toFixed(2)}` : "—"}
               </div>
 
+              {/* Servicios asignados */}
+              <div className="servicios-cell">
+                {(c.servicios || []).length === 0 ? (
+                  <span className="servicios-none">—</span>
+                ) : (
+                  <>
+                    {(c.servicios || []).slice(0, 3).map(s => (
+                      <span
+                        key={s.servicioId}
+                        className="cat-dot"
+                        style={{ background: CATEGORIAS.find(cat => cat.key === s.categoria)?.color || "#7A8BAA" }}
+                        title={s.nombre}
+                      />
+                    ))}
+                    <span className="servicios-count">{(c.servicios || []).length}</span>
+                  </>
+                )}
+              </div>
+
               {/* Estado */}
               <div>
                 <span className={`badge badge-${c.estado === "activo" ? "ok" : "warn"}`}>
@@ -204,6 +242,13 @@ export default function Clientes() {
 
               {/* Acciones */}
               <div className="cell-actions">
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => setAsignacionTarget(c)}
+                  title="Gestionar servicios"
+                >
+                  ⊞
+                </button>
                 <button
                   className="btn btn-ghost btn-sm"
                   onClick={() => setModal(c)}
@@ -221,6 +266,15 @@ export default function Clientes() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Modal servicios asignados */}
+      {asignacionTarget && (
+        <AsignacionModal
+          cliente={asignacionTarget}
+          serviciosCatalogo={serviciosCatalogo}
+          onClose={() => setAsignacionTarget(null)}
+        />
       )}
 
       {/* Modal crear/editar */}
