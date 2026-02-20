@@ -1,0 +1,291 @@
+.proyecto-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.2s ease;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+.proyecto-modal-lg {
+  max-width: 580px;
+}
+
+/* Header sub */
+.pm-header-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Textarea */
+.pm-textarea {
+  resize: vertical;
+  min-height: 64px;
+  font-family: inherit;
+}
+
+/* Detail header */
+.pm-detail-body {
+  overflow-y: auto;
+}
+
+.pm-detail-header {
+  margin-bottom: 16px;
+}
+
+.pm-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.pm-detail-tipo {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pm-detail-cliente {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Tabs */
+.pm-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.pm-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.pm-tab:hover { color: var(--text); }
+.pm-tab.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+
+/* Tab content */
+.pm-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Progreso global */
+.pm-prog-global {
+  background: rgba(0,184,148,0.06);
+  border: 1px solid rgba(0,184,148,0.15);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 4px;
+}
+
+.pm-prog-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pm-prog-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pm-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #00d4aa);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.pm-prog-txt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.pm-prog-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Empty hint */
+.pm-empty-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Etapa card */
+.pm-etapa-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-etapa-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pm-etapa-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.pm-etapa-nombre {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Badge as button */
+.badge-btn {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.badge-btn:hover { opacity: 0.8; }
+
+.pm-etapa-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pm-etapa-montos {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pm-etapa-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.pm-etapa-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  height: auto;
+}
+
+.pm-etapa-del {
+  color: var(--coral);
+  border-color: transparent;
+}
+.pm-etapa-del:hover {
+  background: rgba(255,107,107,0.08);
+  border-color: rgba(255,107,107,0.2);
+}
+
+/* Add etapa */
+.pm-add-etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0,184,148,0.05);
+  border: 1px dashed rgba(0,184,148,0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.pm-add-input {
+  font-size: 13px;
+}
+
+.pm-add-monto {
+  max-width: 160px;
+}
+
+.pm-add-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.pm-add-etapa-btn {
+  font-size: 13px;
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Bitácora */
+.pm-bit-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--green);
+  background: rgba(255,255,255,0.02);
+  border-radius: 0 8px 8px 0;
+}
+
+.pm-bit-fecha {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.pm-bit-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Nota manual */
+.pm-add-nota {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-nota-textarea {
+  resize: vertical;
+  min-height: 64px;
+  font-family: inherit;
+  font-size: 13px;
+}

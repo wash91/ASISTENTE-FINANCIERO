@@ -1,0 +1,58 @@
+.etapa-cobro-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.2s ease;
+}
+
+/* Resumen */
+.etapa-cobro-resumen {
+  display: flex;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.etapa-cobro-res-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.etapa-cobro-res-item + .etapa-cobro-res-item {
+  border-left: 1px solid var(--border);
+}
+
+.etapa-cobro-res-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.etapa-cobro-res-val {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text);
+}
+
+.etapa-cobro-res-val.ok   { color: var(--green); }
+.etapa-cobro-res-val.warn { color: var(--amber); }
+
+/* Subtitle */
+.etapa-cobro-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
