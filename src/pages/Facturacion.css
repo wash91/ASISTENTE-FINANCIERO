@@ -1,0 +1,187 @@
+.facturacion-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1200px;
+}
+
+/* HEADER */
+.fact-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* STATS */
+.fact-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.fact-stat-card {
+  padding: 20px 22px;
+}
+
+.fact-stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.fact-stat-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.fact-stat-green { color: var(--green); }
+.fact-stat-amber { color: var(--amber); }
+
+.fact-stat-count {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* TOOLBAR */
+.fact-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* EMPTY */
+.fact-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 14px;
+  color: var(--text-muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+/* TABLE */
+.fact-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.fact-head,
+.fact-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 1fr 0.9fr auto;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+}
+
+.fact-head {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+
+.fact-row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.fact-row:last-child { border-bottom: none; }
+.fact-row:hover { background: var(--card-hover); }
+
+/* Cliente */
+.fact-cliente-nombre {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.fact-cliente-ruc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  margin-top: 2px;
+}
+
+/* Período */
+.fact-periodo {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Montos */
+.fact-monto {
+  font-weight: 700;
+  font-size: 14px;
+}
+.fact-monto-green { color: var(--green); font-weight: 700; font-size: 14px; }
+.fact-monto-coral { color: var(--coral); }
+
+/* Barra de progreso */
+.fact-progress-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+.fact-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #00d4aa);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0,184,148,0.5);
+  transition: width 0.4s ease;
+}
+
+/* Acciones */
+.fact-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+.fact-actions .btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+  .fact-head,
+  .fact-row {
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.9fr auto;
+  }
+  /* Ocultar columna Pendiente */
+  .fact-head > :nth-child(5),
+  .fact-row > :nth-child(5) { display: none; }
+}
+@media (max-width: 700px) {
+  .fact-stats { grid-template-columns: 1fr; }
+  .fact-head,
+  .fact-row {
+    grid-template-columns: 1fr 1fr auto;
+  }
+  .fact-head > :nth-child(2),
+  .fact-row > :nth-child(2),
+  .fact-head > :nth-child(3),
+  .fact-row > :nth-child(3),
+  .fact-head > :nth-child(4),
+  .fact-row > :nth-child(4),
+  .fact-head > :nth-child(6),
+  .fact-row > :nth-child(6) { display: none; }
+}

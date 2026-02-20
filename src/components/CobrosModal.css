@@ -1,0 +1,81 @@
+.cobros-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+}
+
+.cobros-modal .modal-body {
+  overflow-y: auto;
+}
+
+/* Sin clientes disponibles */
+.cobros-no-clientes {
+  padding: 12px 14px;
+  background: rgba(249,199,79,0.07);
+  border: 1px solid rgba(249,199,79,0.2);
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  color: var(--amber);
+  line-height: 1.5;
+}
+
+/* Período */
+.cobros-periodo-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Desglose */
+.cobros-desglose {
+  margin-bottom: 16px;
+}
+
+.cobros-desglose-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cobros-desglose-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,0.03);
+  font-size: 13px;
+}
+
+.cobros-desglose-nombre {
+  color: var(--text-muted);
+}
+
+.cobros-desglose-precio {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.cobros-desglose-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px 6px;
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.cobros-desglose-total strong {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+}

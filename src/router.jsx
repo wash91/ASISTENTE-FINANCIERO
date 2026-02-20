@@ -11,6 +11,7 @@ import Servicios     from "./pages/Servicios";
 import Calendario    from "./pages/Calendario";
 import Configuracion from "./pages/Configuracion";
 import Usuarios      from "./pages/Usuarios";
+import Facturacion   from "./pages/Facturacion";
 
 // Páginas placeholder para Fase 2+
 const pages = {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
       { path: "calendario",     element: <Calendario /> },
       { path: "clientes",       element: <Clientes /> },
       { path: "proyectos",      element: <Placeholder {...pages.Proyectos} /> },
-      { path: "facturacion",    element: <Placeholder {...pages.Facturacion} /> },
+      { path: "facturacion",    element: <Facturacion /> },
       { path: "gastos",         element: <Placeholder {...pages.Gastos} /> },
       { path: "reportes",       element: <Placeholder {...pages.Reportes} /> },
       { path: "servicios",      element: <Servicios /> },
