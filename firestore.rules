@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Resuelve el empresaId del usuario autenticado.
+    // Caso bootstrap (primer admin): no existe entrada en usuarios_index →
+    //   su propio UID es su empresaId.
+    function myEmpresaId() {
+      return exists(/databases/$(database)/documents/usuarios_index/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/usuarios_index/$(request.auth.uid)).data.empresaId
+        : request.auth.uid;
+    }
+
+    // El usuario pertenece a esta empresa
+    function inEmpresa(empresaId) {
+      return isAuth() && myEmpresaId() == empresaId;
+    }
+
+    // El usuario es admin de la empresa
+    function isAdmin(empresaId) {
+      return isAuth() && (
+        // Caso bootstrap: sin entrada en usuarios_index → es el admin fundador
+        !exists(/databases/$(database)/documents/usuarios_index/$(request.auth.uid))
+          ? empresaId == request.auth.uid
+          : (
+              exists(/databases/$(database)/documents/empresas/$(empresaId)/usuarios/$(request.auth.uid))
+              && get(/databases/$(database)/documents/empresas/$(empresaId)/usuarios/$(request.auth.uid)).data.rol == 'admin'
+            )
+      );
+    }
+
+    // ── usuarios_index ───────────────────────────────────────────────────────
+    // Solo lectura del propio registro (necesario para el flujo de login).
+    // Escritura deshabilitada desde el cliente — solo se modifica via consola/Admin SDK.
+    match /usuarios_index/{uid} {
+      allow read:  if isAuth() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ── Documento raíz de empresa ────────────────────────────────────────────
+    // Cualquier miembro de la empresa puede leer y actualizar (nombre, logo, firma, etc.)
+    match /empresas/{empresaId} {
+      allow read, write: if inEmpresa(empresaId);
+    }
+
+    // ── Subcol usuarios: lectura para todos, escritura solo admin ────────────
+    match /empresas/{empresaId}/usuarios/{uid} {
+      allow read:                if inEmpresa(empresaId);
+      allow create, update, delete: if isAdmin(empresaId);
+    }
+
+    // ── Todas las demás subcol de primer nivel ───────────────────────────────
+    // clientes, servicios, proyectos, cobros, gastos, comprobantes,
+    // declaraciones, plantillasWhatsApp → cualquier miembro activo
+    match /empresas/{empresaId}/{collection}/{docId} {
+      allow read, write: if inEmpresa(empresaId) && collection != 'usuarios';
+    }
+
+    // ── Subcol anidadas ──────────────────────────────────────────────────────
+    // clientes/{id}/obligaciones/{id}  →  cualquier miembro
+    match /empresas/{empresaId}/{col}/{docId}/{sub}/{subDocId} {
+      allow read, write: if inEmpresa(empresaId);
+    }
+  }
+}

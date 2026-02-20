@@ -1,0 +1,35 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Nota: las reglas de Storage no pueden consultar Firestore directamente,
+    // por lo que no podemos verificar a qué empresa pertenece el usuario aquí.
+    // La seguridad multi-tenant a nivel de Storage se basa en:
+    //   1. Requerir autenticación en todas las operaciones.
+    //   2. El empresaId en la ruta es provisto por el cliente (validado en Firestore).
+    // Para mayor seguridad, se recomienda migrar a Firebase Custom Claims en una
+    // versión futura, lo que permitiría verificar el empresaId desde estas reglas.
+
+    // ── Archivos de empresa ───────────────────────────────────────────────────
+    // Estructura: empresas/{empresaId}/...
+    //   - logo / firma         (Configuracion.jsx)
+    //   - xmls/{clave}.xml     (Comprobantes.jsx)
+    //   - clientes/{id}/docs   (DocumentosModal.jsx)
+
+    match /empresas/{empresaId}/{allPaths=**} {
+      // Lectura: cualquier usuario autenticado puede obtener URLs de descarga
+      allow read: if isAuth();
+
+      // Escritura: cualquier usuario autenticado
+      // El control de quién escribe en qué empresa se delega a las reglas de Firestore
+      // (los metadatos solo se guardan en Firestore si se pasa la validación).
+      allow write: if isAuth()
+        && request.resource.size < 20 * 1024 * 1024; // max 20 MB por archivo
+    }
+  }
+}
