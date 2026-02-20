@@ -12,7 +12,8 @@ const PAGE_INFO = {
   "/servicios":      { icon: "⊞", title: "Servicios",     sub: "Catálogo y precios base" },
   "/whatsapp":       { icon: "◉", title: "WhatsApp",      sub: "Plantillas de mensajes" },
   "/configuracion":  { icon: "⚙", title: "Configuración", sub: "Empresa y usuarios del sistema" },
-  "/usuarios":       { icon: "◎", title: "Usuarios",      sub: "Gestión de acceso y roles del equipo" },
+  "/usuarios":       { icon: "◎", title: "Usuarios",        sub: "Gestión de acceso y roles del equipo" },
+  "/declaraciones":  { icon: "◩", title: "Declaraciones SRI", sub: "Checklist de preparación por cliente y formulario" },
 };
 
 export default function Topbar({ onNewClient }) {

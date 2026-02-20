@@ -14,6 +14,7 @@ import Usuarios      from "./pages/Usuarios";
 import Facturacion   from "./pages/Facturacion";
 import Gastos        from "./pages/Gastos";
 import Whatsapp      from "./pages/Whatsapp";
+import Declaraciones from "./pages/Declaraciones";
 
 // Páginas placeholder para Fase 2+
 const pages = {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       { path: "facturacion",    element: <Facturacion /> },
       { path: "gastos",         element: <Gastos /> },
       { path: "reportes",       element: <Placeholder {...pages.Reportes} /> },
+      { path: "declaraciones",  element: <Declaraciones /> },
       { path: "servicios",      element: <Servicios /> },
       { path: "whatsapp",       element: <Whatsapp /> },
       { path: "configuracion",  element: <Configuracion /> },
