@@ -14,6 +14,7 @@ const PAGE_INFO = {
   "/configuracion":  { icon: "⚙", title: "Configuración", sub: "Empresa y usuarios del sistema" },
   "/usuarios":       { icon: "◎", title: "Usuarios",        sub: "Gestión de acceso y roles del equipo" },
   "/declaraciones":  { icon: "◩", title: "Declaraciones SRI", sub: "Checklist de preparación por cliente y formulario" },
+  "/comprobantes":   { icon: "⊙", title: "XML SRI",          sub: "Comprobantes electrónicos del SRI" },
 };
 
 export default function Topbar({ onNewClient }) {

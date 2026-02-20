@@ -20,6 +20,7 @@ const NAV = [
       { to: "/gastos",        icon: "◑", text: "Gastos",        badge: null },
       { to: "/declaraciones", icon: "◩", text: "Declaraciones", badge: null },
       { to: "/reportes",      icon: "◰", text: "Reportes",      badge: null },
+      { to: "/comprobantes",  icon: "⊙", text: "XML SRI",       badge: null },
     ]
   },
   {
