@@ -1,0 +1,7 @@
+/* Reset mínimo — el resto está en global.css */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+#root {
+  height: 100vh;
+}

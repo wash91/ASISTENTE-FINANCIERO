@@ -1,0 +1,36 @@
+.servicio-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+}
+
+/* NOTA PRECIO MÍNIMO */
+.price-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(249,199,79,0.07);
+  border: 1px solid rgba(249,199,79,0.2);
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  color: var(--amber);
+  line-height: 1.45;
+  margin-top: 8px;
+}
+.price-note-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* PUNTO DE COLOR DE CATEGORÍA */
+.cat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

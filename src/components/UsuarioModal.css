@@ -1,0 +1,33 @@
+.usuario-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.usuario-modal .modal-body {
+  overflow-y: auto;
+}
+
+.field-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.server-error {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.25);
+  border-radius: var(--radius-xs);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--coral);
+  margin-top: 4px;
+}
