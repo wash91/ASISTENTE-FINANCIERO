@@ -69,11 +69,11 @@ function printReporte(titulo, subtitulo, htmlTable) {
   </style>
 </head>
 <body>
-  <div class="rpt-logo">Conta<span>Flow</span></div>
+  <div class="rpt-logo">Asistente<span> Financiero</span></div>
   <h1>${titulo}</h1>
   <p class="sub">${subtitulo} &nbsp;·&nbsp; ${new Date().toLocaleDateString("es-EC", { day:"2-digit", month:"long", year:"numeric" })}</p>
   ${htmlTable}
-  <div class="footer">ContaFlow — Sistema de Gestión Contable</div>
+  <div class="footer">Asistente Financiero — Sistema de Gestión Contable</div>
   <script>setTimeout(() => window.print(), 350);<\/script>
 </body></html>`);
   win.document.close();

@@ -57,9 +57,9 @@ export default function Sidebar() {
     >
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-icon">⚡</div>
+        <div className="logo-icon">📊</div>
         <div className={`logo-text ${expanded ? "visible" : ""}`}>
-          Conta<span>Flow</span>
+          Asistente<br/><span>Financiero</span>
         </div>
       </div>
 

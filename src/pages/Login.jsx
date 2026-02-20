@@ -73,10 +73,10 @@ export default function Login() {
       <div className="login-container">
         {/* Logo */}
         <div className="login-logo">
-          <div className="login-logo-icon">⚡</div>
+          <div className="login-logo-icon">📊</div>
           <div>
             <div className="login-logo-text">
-              Conta<span>Flow</span>
+              Asistente <span>Financiero</span>
             </div>
             <div className="login-logo-sub">Sistema de Gestión Contable</div>
           </div>
@@ -172,7 +172,7 @@ export default function Login() {
           </div>
         </div>
 
-        <p className="login-version">ContaFlow v1.0 · Macas, Ecuador 🇪🇨</p>
+        <p className="login-version">Asistente Financiero v1.0 · Macas, Ecuador 🇪🇨</p>
       </div>
     </div>
   );

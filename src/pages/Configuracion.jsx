@@ -206,7 +206,7 @@ export default function Configuracion() {
                   ? <img src={logoURL} alt="Logo empresa" />
                   : (
                     <div className="logo-ph">
-                      <div className="logo-ph-icon">⚡</div>
+                      <div className="logo-ph-icon">📊</div>
                       <div className="logo-ph-text">Subir logo</div>
                     </div>
                   )
@@ -373,15 +373,15 @@ export default function Configuracion() {
         <div className="config-card">
           <div className="config-card-title">Plan y Cuenta</div>
           <div className="config-card-sub">
-            Tu suscripción actual a ContaFlow
+            Tu suscripción actual a Asistente Financiero
           </div>
 
           <div className="plan-grid">
             <div className="plan-badge">
-              <div className="plan-badge-icon">⚡</div>
+              <div className="plan-badge-icon">📊</div>
               <div>
                 <div className="plan-badge-name">Plan Profesional</div>
-                <div className="plan-badge-sub">ContaFlow — Macas, Ecuador</div>
+                <div className="plan-badge-sub">Asistente Financiero — Macas, Ecuador</div>
               </div>
             </div>
 
