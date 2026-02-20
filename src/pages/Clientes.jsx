@@ -23,6 +23,7 @@ export default function Clientes() {
   const [search, setSearch] = useState("");
   const [filtro, setFiltro] = useState("todos");
   const [modal, setModal] = useState(null);       // null | "nuevo" | cliente objeto
+  const [modalTab, setModalTab] = useState("datos");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [asignacionTarget,  setAsignacionTarget]  = useState(null);
@@ -87,6 +88,7 @@ export default function Clientes() {
       await addDoc(ref, { ...data, createdAt: serverTimestamp() });
     }
     setModal(null);
+    setModalTab("datos");
   }
 
   async function handleDelete() {
@@ -120,7 +122,7 @@ export default function Clientes() {
             {loading ? "Cargando..." : `${totalActivos} activos · ${clientes.length} en total`}
           </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setModal("nuevo")}>
+        <button className="btn btn-primary" onClick={() => { setModal("nuevo"); setModalTab("datos"); }}>
           + Nuevo Cliente
         </button>
       </div>
@@ -170,7 +172,7 @@ export default function Clientes() {
                 : "Aún no hay clientes registrados."}
           </div>
           {!search && filtro === "todos" && (
-            <button className="btn btn-primary" onClick={() => setModal("nuevo")}>
+            <button className="btn btn-primary" onClick={() => { setModal("nuevo"); setModalTab("datos"); }}>
               Registrar primer cliente
             </button>
           )}
@@ -260,7 +262,14 @@ export default function Clientes() {
                 </button>
                 <button
                   className="btn btn-ghost btn-sm"
-                  onClick={() => setModal(c)}
+                  onClick={() => { setModal(c); setModalTab("credenciales"); }}
+                  title="Credenciales portales"
+                >
+                  🔑
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => { setModal(c); setModalTab("datos"); }}
                 >
                   Editar
                 </button>
@@ -299,7 +308,8 @@ export default function Clientes() {
         <ClienteModal
           cliente={modal === "nuevo" ? null : modal}
           onSave={handleSave}
-          onClose={() => setModal(null)}
+          onClose={() => { setModal(null); setModalTab("datos"); }}
+          initialTab={modalTab}
         />
       )}
 

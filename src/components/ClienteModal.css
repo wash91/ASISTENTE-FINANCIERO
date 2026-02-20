@@ -40,6 +40,88 @@
   flex-shrink: 0;
 }
 
+/* TABS */
+.cm-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+.cm-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 11px 16px;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.cm-tab:hover { color: var(--text); }
+.cm-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* CREDENCIALES */
+.cred-warning {
+  font-size: 12px;
+  color: var(--amber);
+  background: rgba(249,199,79,0.07);
+  border: 1px solid rgba(249,199,79,0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.cred-portal-row {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.cred-portal-row:hover { border-color: rgba(255,255,255,0.12); }
+.cred-portal-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.cred-portal-icon { font-size: 16px; }
+.cred-portal-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.cred-portal-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cred-pass-wrap { position: relative; }
+.cred-pass-wrap .form-input { padding-right: 40px; }
+.cred-eye-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 3px;
+  color: var(--text-muted);
+  line-height: 1;
+  transition: color 0.15s;
+}
+.cred-eye-btn:hover { color: var(--text); }
+
+@media (max-width: 480px) {
+  .cred-portal-fields { grid-template-columns: 1fr; }
+}
+
 /* CUSTOM CHECKBOX */
 .checkbox-wrap {
   display: flex;
