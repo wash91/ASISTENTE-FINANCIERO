@@ -1,0 +1,130 @@
+.rpt-page {
+  /* inherits layout padding */
+}
+
+.rpt-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.rpt-page-title {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.rpt-page-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Cards grid */
+.rpt-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+/* Card */
+.rpt-card {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.rpt-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.rpt-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.rpt-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.rpt-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rpt-card-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.rpt-card-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Filters */
+.rpt-filter-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.rpt-filter-select {
+  min-width: 130px;
+  font-size: 12px;
+  padding: 7px 10px;
+  height: auto;
+}
+
+.rpt-filter-count {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Actions */
+.rpt-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.rpt-btn {
+  font-size: 12.5px;
+  padding: 8px 18px;
+  height: auto;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .rpt-cards {
+    grid-template-columns: 1fr;
+  }
+}
