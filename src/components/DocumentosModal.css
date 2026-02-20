@@ -1,0 +1,151 @@
+.documentos-modal {
+  background: var(--navy-light);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.25s ease;
+}
+
+.documentos-modal .modal-body {
+  overflow-y: auto;
+}
+
+.docs-modal-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Loading / Empty */
+.docs-loading {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 12px 0;
+}
+
+.docs-empty {
+  text-align: center;
+  padding: 28px 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.docs-empty-icon {
+  font-size: 36px;
+  opacity: 0.3;
+  margin-bottom: 8px;
+}
+
+.docs-empty span {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Lista de documentos */
+.docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+
+.doc-item:hover { border-color: var(--border-mid); }
+
+.doc-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.doc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-nombre {
+  font-weight: 600;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* File input */
+.docs-file-input {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 9px 10px;
+}
+
+.docs-file-info {
+  font-size: 12px;
+  color: var(--green);
+  margin-top: -8px;
+  margin-bottom: 4px;
+}
+
+/* Barra de progreso de subida */
+.docs-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.docs-progress-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.docs-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #00d4aa);
+  border-radius: 3px;
+  transition: width 0.2s ease;
+  box-shadow: 0 0 8px rgba(0,184,148,0.5);
+}
+
+.docs-progress-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 32px;
+  text-align: right;
+}

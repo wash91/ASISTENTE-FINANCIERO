@@ -12,6 +12,7 @@ import { db } from "../firebase/config";
 import { useAuth } from "../context/AuthContext";
 import ClienteModal from "../components/ClienteModal";
 import AsignacionModal from "../components/AsignacionModal";
+import DocumentosModal from "../components/DocumentosModal";
 import { CATEGORIAS } from "./Servicios";
 import "./Clientes.css";
 
@@ -24,8 +25,9 @@ export default function Clientes() {
   const [modal, setModal] = useState(null);       // null | "nuevo" | cliente objeto
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [asignacionTarget, setAsignacionTarget] = useState(null);
+  const [asignacionTarget,  setAsignacionTarget]  = useState(null);
   const [serviciosCatalogo, setServiciosCatalogo] = useState([]);
+  const [documentosTarget,  setDocumentosTarget]  = useState(null);
 
   // Suscripción en tiempo real a Firestore
   useEffect(() => {
@@ -244,6 +246,13 @@ export default function Clientes() {
               <div className="cell-actions">
                 <button
                   className="btn btn-ghost btn-sm"
+                  onClick={() => setDocumentosTarget(c)}
+                  title="Documentos"
+                >
+                  📁
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm"
                   onClick={() => setAsignacionTarget(c)}
                   title="Gestionar servicios"
                 >
@@ -266,6 +275,14 @@ export default function Clientes() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Modal documentos */}
+      {documentosTarget && (
+        <DocumentosModal
+          cliente={documentosTarget}
+          onClose={() => setDocumentosTarget(null)}
+        />
       )}
 
       {/* Modal servicios asignados */}
