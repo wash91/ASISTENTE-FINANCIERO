@@ -160,8 +160,11 @@ Los siguientes archivos YA EXISTEN y están funcionales:
 - `src/router.jsx` — rutas completas con PrivateRoute
 - `src/App.jsx` + `main.jsx` + `index.css`
 
-**Siguiente tarea:** Verificar que todo compila sin errores y el login funciona.
-Luego continuar con M-02 (Clientes) y M-03 (Servicios).
+**Completados:**
+- M-01 Autenticación y roles (admin/usuario) ✓
+- M-02 Registro de clientes + detección RUC + acuerdo confidencialidad ✓ (incluye credenciales AES-GCM, documentos, asignación de servicios)
+
+**Siguiente tarea:** M-03 Servicios — catálogo con precio base mínimo.
 
 ---
 

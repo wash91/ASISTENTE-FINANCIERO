@@ -77,7 +77,12 @@ export default function Clientes() {
       );
     });
 
-  const totalActivos = clientes.filter(c => c.estado === "activo").length;
+  const totalActivos       = clientes.filter(c => c.estado === "activo").length;
+  const totalInactivos     = clientes.filter(c => c.estado !== "activo").length;
+  const facturacionMensual = clientes
+    .filter(c => c.estado === "activo" && c.mensualidad)
+    .reduce((sum, c) => sum + c.mensualidad, 0);
+  const sinAcuerdo = clientes.filter(c => !c.acuerdoConfidencialidad).length;
 
   async function handleSave(data) {
     const { credenciales, ...dataRest } = data;
@@ -149,6 +154,32 @@ export default function Clientes() {
           + Nuevo Cliente
         </button>
       </div>
+
+      {/* Stats */}
+      {!loading && (
+        <div className="clientes-stats">
+          <div className="cstat-card">
+            <div className="cstat-value">{totalActivos}</div>
+            <div className="cstat-label">Activos</div>
+          </div>
+          <div className="cstat-card">
+            <div className="cstat-value cstat-muted">{totalInactivos}</div>
+            <div className="cstat-label">Inactivos</div>
+          </div>
+          <div className="cstat-card">
+            <div className="cstat-value cstat-green">
+              ${facturacionMensual.toLocaleString("es-EC", { minimumFractionDigits: 2 })}
+            </div>
+            <div className="cstat-label">Facturación / mes</div>
+          </div>
+          <div className="cstat-card">
+            <div className={`cstat-value ${sinAcuerdo > 0 ? "cstat-amber" : "cstat-green"}`}>
+              {sinAcuerdo}
+            </div>
+            <div className="cstat-label">Sin acuerdo</div>
+          </div>
+        </div>
+      )}
 
       {/* Toolbar */}
       <div className="clientes-toolbar">
