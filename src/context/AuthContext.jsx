@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
+import { clearKeyCache } from "../utils/empresaKey";
 
 const AuthContext = createContext();
 
@@ -28,6 +29,7 @@ export function AuthProvider({ children }) {
 
   // Logout
   async function logout() {
+    clearKeyCache(); // limpiar claves en memoria antes de cerrar sesión
     return signOut(auth);
   }
 

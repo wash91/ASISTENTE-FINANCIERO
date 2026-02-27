@@ -36,11 +36,13 @@ service cloud.firestore {
     }
 
     // ── usuarios_index ───────────────────────────────────────────────────────
-    // Solo lectura del propio registro (necesario para el flujo de login).
-    // Escritura deshabilitada desde el cliente — solo se modifica via consola/Admin SDK.
+    // Lectura: solo el propio usuario (necesario para el flujo de login).
+    // Escritura: solo admins de la empresa, datos mínimos {empresaId}.
     match /usuarios_index/{uid} {
-      allow read:  if isAuth() && request.auth.uid == uid;
-      allow write: if false;
+      allow read: if isAuth() && request.auth.uid == uid;
+      allow create, update: if isAdmin(myEmpresaId())
+        && request.resource.data.keys().hasOnly(['empresaId'])
+        && request.resource.data.empresaId == myEmpresaId();
     }
 
     // ── Documento raíz de empresa ────────────────────────────────────────────
@@ -55,11 +57,18 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin(empresaId);
     }
 
+    // ── config/keys: solo admins pueden leer/escribir la clave de cifrado ───
+    match /empresas/{empresaId}/config/{docId} {
+      allow read, write: if isAdmin(empresaId);
+    }
+
     // ── Todas las demás subcol de primer nivel ───────────────────────────────
     // clientes, servicios, proyectos, cobros, gastos, comprobantes,
     // declaraciones, plantillasWhatsApp → cualquier miembro activo
     match /empresas/{empresaId}/{collection}/{docId} {
-      allow read, write: if inEmpresa(empresaId) && collection != 'usuarios';
+      allow read, write: if inEmpresa(empresaId)
+        && collection != 'usuarios'
+        && collection != 'config';
     }
 
     // ── Subcol anidadas ──────────────────────────────────────────────────────

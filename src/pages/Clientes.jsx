@@ -10,6 +10,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { useAuth } from "../context/AuthContext";
+import { encryptObject } from "../utils/crypto";
+import { getEmpresaKey } from "../utils/empresaKey";
 import ClienteModal from "../components/ClienteModal";
 import AsignacionModal from "../components/AsignacionModal";
 import DocumentosModal from "../components/DocumentosModal";
@@ -17,7 +19,8 @@ import { CATEGORIAS } from "./Servicios";
 import "./Clientes.css";
 
 export default function Clientes() {
-  const { empresaId } = useAuth();
+  const { empresaId, userProfile } = useAuth();
+  const isAdmin = userProfile?.rol === "admin";
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -77,15 +80,35 @@ export default function Clientes() {
   const totalActivos = clientes.filter(c => c.estado === "activo").length;
 
   async function handleSave(data) {
-    if (data.id) {
-      // Editar
-      const { id, createdAt: _createdAt, ...rest } = data; // no sobreescribir createdAt
-      const ref = doc(db, "empresas", empresaId, "clientes", id);
-      await updateDoc(ref, { ...rest, updatedAt: serverTimestamp() });
+    const { credenciales, ...dataRest } = data;
+
+    let saveData;
+    if (isAdmin && credenciales) {
+      if (credenciales._encrypted) {
+        // Blob cifrado sin cambios (admin no tocó tab credenciales)
+        saveData = { ...dataRest, credenciales };
+      } else {
+        try {
+          const key = await getEmpresaKey(empresaId);
+          const blob = await encryptObject(key, credenciales);
+          saveData = { ...dataRest, credenciales: { _encrypted: true, blob } };
+        } catch (err) {
+          console.error("Error cifrando credenciales:", err);
+          throw new Error("No se pudo cifrar las credenciales. Verifica tu conexión.");
+        }
+      }
     } else {
-      // Crear
-      const ref = collection(db, "empresas", empresaId, "clientes");
-      await addDoc(ref, { ...data, createdAt: serverTimestamp() });
+      // No-admin: excluir credenciales del update (Firestore no toca el campo)
+      saveData = dataRest;
+    }
+
+    if (saveData.id) {
+      const { id, createdAt: _createdAt, ...rest } = saveData;
+      await updateDoc(doc(db, "empresas", empresaId, "clientes", id),
+        { ...rest, updatedAt: serverTimestamp() });
+    } else {
+      await addDoc(collection(db, "empresas", empresaId, "clientes"),
+        { ...saveData, createdAt: serverTimestamp() });
     }
     setModal(null);
     setModalTab("datos");
@@ -260,13 +283,15 @@ export default function Clientes() {
                 >
                   ⊞
                 </button>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={() => { setModal(c); setModalTab("credenciales"); }}
-                  title="Credenciales portales"
-                >
-                  🔑
-                </button>
+                {isAdmin && (
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => { setModal(c); setModalTab("credenciales"); }}
+                    title="Credenciales portales"
+                  >
+                    🔑
+                  </button>
+                )}
                 <button
                   className="btn btn-ghost btn-sm"
                   onClick={() => { setModal(c); setModalTab("datos"); }}

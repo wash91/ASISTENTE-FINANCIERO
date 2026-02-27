@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { decryptObject } from "../utils/crypto";
+import { getEmpresaKey } from "../utils/empresaKey";
 import "./ClienteModal.css";
 
 const DIGITO_MAP = { 0: 28, 1: 10, 2: 12, 3: 14, 4: 16, 5: 20, 6: 20, 7: 22, 8: 24, 9: 26 };
@@ -85,19 +88,50 @@ function PortalRow({ portal, cred, onChange }) {
 }
 
 export default function ClienteModal({ cliente, onSave, onClose, initialTab = "datos" }) {
+  const { empresaId, userProfile } = useAuth();
+  const isAdmin = userProfile?.rol === "admin";
+
   const [activeTab, setActiveTab] = useState(initialTab);
-  const [form, setForm] = useState(() =>
-    cliente
-      ? {
-          ...EMPTY,
-          ...cliente,
-          mensualidad: cliente.mensualidad ?? "",
-          credenciales: { ...EMPTY_CRED, ...(cliente.credenciales || {}) },
-        }
-      : EMPTY
-  );
+  const [form, setForm] = useState(() => {
+    if (!cliente) return EMPTY;
+    // Si las credenciales están cifradas, iniciar con vacío; useEffect las descifra
+    const credenciales = cliente.credenciales?._encrypted
+      ? { ...EMPTY_CRED }
+      : { ...EMPTY_CRED, ...(cliente.credenciales || {}) };
+    return { ...EMPTY, ...cliente, mensualidad: cliente.mensualidad ?? "", credenciales };
+  });
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // credUnlocked=true cuando las credenciales ya están en texto plano en el form
+  const [credUnlocked, setCredUnlocked] = useState(
+    () => !cliente?.credenciales?._encrypted
+  );
+  const [credDecrypting, setCredDecrypting] = useState(false);
+  const [credError, setCredError] = useState(null);
+
+  // Descifrar credenciales al montar si están cifradas y el usuario es admin
+  useEffect(() => {
+    if (!cliente?.credenciales?._encrypted || !isAdmin || !empresaId) return;
+    let cancelled = false;
+    setCredDecrypting(true);
+    setCredError(null);
+    (async () => {
+      try {
+        const key = await getEmpresaKey(empresaId);
+        const decrypted = await decryptObject(key, cliente.credenciales.blob);
+        if (!cancelled) {
+          setForm(f => ({ ...f, credenciales: { ...EMPTY_CRED, ...decrypted } }));
+          setCredUnlocked(true);
+        }
+      } catch (err) {
+        if (!cancelled) setCredError("No se pudieron descifrar las credenciales.");
+      } finally {
+        if (!cancelled) setCredDecrypting(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []); // Solo al montar
 
   function handleRUC(val) {
     const ruc = val.replace(/\D/g, "").slice(0, 13);
@@ -142,9 +176,15 @@ export default function ClienteModal({ cliente, onSave, onClose, initialTab = "d
     if (!validate()) return;
     setSaving(true);
     try {
+      // Si el admin no desbloqueó las credenciales, preservar el blob cifrado original
+      const credenciales = (!credUnlocked && cliente?.credenciales?._encrypted)
+        ? cliente.credenciales
+        : form.credenciales;
+
       await onSave({
         ...form,
         mensualidad: form.mensualidad !== "" ? Number(form.mensualidad) : null,
+        credenciales,
       });
     } finally {
       setSaving(false);
@@ -172,13 +212,15 @@ export default function ClienteModal({ cliente, onSave, onClose, initialTab = "d
           >
             Datos
           </button>
-          <button
-            type="button"
-            className={`cm-tab ${activeTab === "credenciales" ? "active" : ""}`}
-            onClick={() => setActiveTab("credenciales")}
-          >
-            🔑 Credenciales
-          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              className={`cm-tab ${activeTab === "credenciales" ? "active" : ""}`}
+              onClick={() => setActiveTab("credenciales")}
+            >
+              🔑 Credenciales
+            </button>
+          )}
         </div>
 
         {/* Body */}
@@ -315,35 +357,47 @@ export default function ClienteModal({ cliente, onSave, onClose, initialTab = "d
           )}
 
           {/* ── TAB CREDENCIALES ── */}
-          {activeTab === "credenciales" && (
+          {activeTab === "credenciales" && isAdmin && (
             <>
               <div className="cred-warning">
                 ⚠ Información confidencial — manéjala solo con autorización del cliente.
               </div>
 
-              {PORTALES.map(p => (
-                <PortalRow
-                  key={p.key}
-                  portal={p}
-                  cred={form.credenciales[p.key] || { usuario: "", clave: "" }}
-                  onChange={(f, v) => setCred(p.key, f, v)}
-                />
-              ))}
+              {credDecrypting ? (
+                <div style={{ textAlign: "center", padding: "32px 0", color: "var(--text-muted)" }}>
+                  🔓 Descifrando credenciales...
+                </div>
+              ) : credError ? (
+                <div style={{ textAlign: "center", padding: "32px 0", color: "var(--coral)" }}>
+                  {credError}
+                </div>
+              ) : (
+                <>
+                  {PORTALES.map(p => (
+                    <PortalRow
+                      key={p.key}
+                      portal={p}
+                      cred={form.credenciales[p.key] || { usuario: "", clave: "" }}
+                      onChange={(f, v) => setCred(p.key, f, v)}
+                    />
+                  ))}
 
-              <div className="form-group" style={{ marginTop: "8px" }}>
-                <label className="form-label">Notas adicionales</label>
-                <textarea
-                  className="form-input"
-                  rows={3}
-                  placeholder="Ej: clave RISE, portal Municipio, usuario banco..."
-                  value={form.credenciales.notas || ""}
-                  onChange={e => setForm(f => ({
-                    ...f,
-                    credenciales: { ...f.credenciales, notas: e.target.value },
-                  }))}
-                  style={{ resize: "vertical" }}
-                />
-              </div>
+                  <div className="form-group" style={{ marginTop: "8px" }}>
+                    <label className="form-label">Notas adicionales</label>
+                    <textarea
+                      className="form-input"
+                      rows={3}
+                      placeholder="Ej: clave RISE, portal Municipio, usuario banco..."
+                      value={form.credenciales.notas || ""}
+                      onChange={e => setForm(f => ({
+                        ...f,
+                        credenciales: { ...f.credenciales, notas: e.target.value },
+                      }))}
+                      style={{ resize: "vertical" }}
+                    />
+                  </div>
+                </>
+              )}
             </>
           )}
 
